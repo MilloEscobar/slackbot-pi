@@ -1,2 +1,2 @@
-## slackbot-Py
+## Slackbot-Pi
 

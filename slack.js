@@ -5,7 +5,7 @@ var RTM_EVENTS = require('@slack/client').RTM_EVENTS;
 var winston = require('winston');
 var env = require('./.env.json');
 var updates = require('./updates');
-var pi = require('./raspberry/serialOutput.js');
+var pi = require('./raspberry/raspberry.js');
 
 var botToken = env.SLACK_BOT_TOKEN || '';
 var web = new WebClient(botToken);
@@ -28,7 +28,7 @@ var tryToConnect = function() {
       }
 
       userid = rtmStartData.self.id;
-      channel = 'D62PY4S2D';
+      channel = 'D5W4WB8KU';
       winston.info('I am user # ' + userid);
     });
 
@@ -41,7 +41,6 @@ var tryToConnect = function() {
 
     rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
       winston.log(message);
-      console.log(message.channel);
 
       if (message.text) {
 

@@ -22,7 +22,7 @@ module.exports = {
       return;
     }
 
-    if(['motor'].indexOf(params[0]) < 0) {
+    if(['motor', 'lights'].indexOf(params[0]) < 0) {
       web.chat.postMessage(message.channel, 'Sorry, ' + params[0] + ' is not yet active.', opts);
       return;
     }
@@ -32,7 +32,7 @@ module.exports = {
       return;
     }
 
-    if(params[2] && ['front', 'back', 'left', 'right'].indexOf(params[2]) < 0) {
+    if(params[2] && ['forward', 'backward', 'left', 'right'].indexOf(params[2]) < 0) {
       web.chat.postMessage(message.channel, 'Sorry, I dont know this action for ' + params[0], opts);
       return;
     }
@@ -51,21 +51,34 @@ module.exports = {
 
     updateComponent(component);
 
+    let response;
+    if (component.name === 'motor') {
+      if(component.state === 'on') {
+        request(`http://10.28.6.68:8080/setUpMotors`);
+        response = 'Car is moving '+component.direction;
+      }
 
-     if(component.name === 'motor') { //object
-       if(component.state === 'on') { //action
-         //request(`http://10.28.6.68:8080/startMotor`);
-         web.chat.postMessage(message.channel, 'Car is moving forward', opts);
-         return;
-       }
+      else if(component.state === 'off') {
+        request(`http://10.28.6.68:8080/stopMotor`);
+        response = 'Car has stopped';
+      }
+    }
 
-       if(component.state === 'off') { //action
-         //request(`http://10.28.6.68:8080/stopMotor`);
-         web.chat.postMessage(message.channel, 'Car has stopped', opts);
-         return;
-       }
-     }
-     
+    else if(component.name === 'lights') {
+      if(component.state === 'blink') {
+        request(`http://10.28.6.68:8080/startLed`);
+        response = 'LED is blinking';
+      }
+
+      else if(component.state === 'off') {
+        response = 'LED is turned off';
+      }
+
+      else if(component.state === 'on') {
+        response = 'LED is turned on';
+      }
+    }
+    web.chat.postMessage(message.channel, response, opts);
    },
  };
 
